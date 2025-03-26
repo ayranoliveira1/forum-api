@@ -1,4 +1,4 @@
-import { UnauthorizedException, UsePipes } from '@nestjs/common'
+import { UnauthorizedException } from '@nestjs/common'
 import { Body, Controller, HttpCode, Post } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { z } from 'zod'
@@ -13,6 +13,8 @@ const AuthenticateBodySchema = z.object({
 
 type AuthenticateBodyType = z.infer<typeof AuthenticateBodySchema>
 
+const bodyValidationPepe = new ZodValidationPipe(AuthenticateBodySchema)
+
 @Controller()
 export class AuthenticateController {
   constructor(
@@ -22,8 +24,7 @@ export class AuthenticateController {
 
   @Post('/sessions')
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(AuthenticateBodySchema))
-  async handle(@Body() body: AuthenticateBodyType) {
+  async handle(@Body(bodyValidationPepe) body: AuthenticateBodyType) {
     const { email, password } = body
 
     const user = await this.prisma.user.findUnique({
