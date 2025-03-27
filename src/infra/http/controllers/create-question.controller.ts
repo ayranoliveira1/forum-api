@@ -3,8 +3,8 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { JwtAuthGuart } from '@/infra/auth/jwt-auth-guard'
 import { UserPayload } from '@/infra/auth/jwt-strategy'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { z } from 'zod'
+import { NestCreateQuestionUseCase } from '@/infra/nest-use-case/nest-create-question'
 
 const createQuestionBodySchema = z.object({
   title: z.string(),
@@ -18,7 +18,7 @@ const bodyValidationPepe = new ZodValidationPipe(createQuestionBodySchema)
 @UseGuards(JwtAuthGuart)
 @Controller()
 export class CreateQuestionController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private createQuestion: NestCreateQuestionUseCase) {}
 
   @Post('/questions')
   @HttpCode(201)
@@ -29,24 +29,11 @@ export class CreateQuestionController {
     const { title, content } = body
     const userId = user.sub
 
-    const slug = this.convertTitleToSlug(title)
-
-    await this.prisma.question.create({
-      data: {
-        authorId: userId,
-        title,
-        content,
-        slug,
-      },
+    await this.createQuestion.execute({
+      authorId: userId,
+      title,
+      content,
+      attachmentsIds: [],
     })
-  }
-
-  private convertTitleToSlug(title: string) {
-    return title
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^\s-]/g, '')
-      .replace(/\s+/g, '-')
   }
 }
