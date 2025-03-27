@@ -30,7 +30,7 @@ export class FetchRecentQuestionsController {
   ) {
     const perPage = 10
 
-    const questions = await this.prisma.questions.findMany({
+    const questions = await this.prisma.question.findMany({
       take: perPage,
       skip: (page - 1) * perPage,
       orderBy: {

@@ -36,7 +36,7 @@ describe('Get question (E2E)', () => {
 
     const token = jwt.sign({ sub: user.id })
 
-    await prisma.questions.createMany({
+    await prisma.question.createMany({
       data: [
         {
           title: 'How to create a question?',

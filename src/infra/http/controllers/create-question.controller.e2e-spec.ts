@@ -46,7 +46,7 @@ describe('Create question (E2E)', () => {
 
     expect(response.statusCode).toBe(201)
 
-    const quetionOnDatabase = await prisma.questions.findFirst({
+    const quetionOnDatabase = await prisma.question.findFirst({
       where: {
         title: 'How to create a question?',
       },
