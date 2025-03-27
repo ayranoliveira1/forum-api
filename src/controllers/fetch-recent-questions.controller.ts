@@ -38,6 +38,8 @@ export class FetchRecentQuestionsController {
       },
     })
 
-    return questions
+    return {
+      questions,
+    }
   }
 }
