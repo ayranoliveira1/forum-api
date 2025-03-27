@@ -37,7 +37,7 @@ export class AuthenticateController {
       throw new UnauthorizedException('Invalid credentials')
     }
 
-    const isValidPassword = compare(password, user.password)
+    const isValidPassword = await compare(password, user.password)
 
     if (!isValidPassword) {
       throw new UnauthorizedException('Invalid credentials')
