@@ -5,6 +5,10 @@ export class Slug {
     this.value = value
   }
 
+  static createValueObject(value: string) {
+    return new Slug(value)
+  }
+
   static create(text: string) {
     const slugText = text
       .normalize('NFKD')
