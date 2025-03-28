@@ -6,15 +6,23 @@ import { FetchRecentQuestionsController } from './controllers/fetch-recent-quest
 import { DatabaseModule } from '../database/database.module'
 import { NestCreateQuestionUseCase } from '../nest-use-case/nest-create-question'
 import { NestFetchRecentsQuestionsUseCase } from '../nest-use-case/nest-fetch-recentes-questions'
+import { CryptographyModule } from './cryptography/cryptography.module'
+import { NestRegisterStudentUseCase } from '../nest-use-case/nest-register-student'
+import { NestAuthenticateStudentUseCase } from '../nest-use-case/nest-authenticate-student'
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, CryptographyModule],
   controllers: [
     CreateAccountController,
     AuthenticateController,
     CreateQuestionController,
     FetchRecentQuestionsController,
   ],
-  providers: [NestCreateQuestionUseCase, NestFetchRecentsQuestionsUseCase],
+  providers: [
+    NestCreateQuestionUseCase,
+    NestFetchRecentsQuestionsUseCase,
+    NestRegisterStudentUseCase,
+    NestAuthenticateStudentUseCase,
+  ],
 })
 export class HttpModule {}

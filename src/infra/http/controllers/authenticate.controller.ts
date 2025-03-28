@@ -1,10 +1,9 @@
-import { UnauthorizedException } from '@nestjs/common'
+import { BadRequestException, UnauthorizedException } from '@nestjs/common'
 import { Body, Controller, HttpCode, Post } from '@nestjs/common'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { z } from 'zod'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
-import { JwtService } from '@nestjs/jwt'
-import { compare } from 'bcryptjs'
+import { NestAuthenticateStudentUseCase } from '@/infra/nest-use-case/nest-authenticate-student'
+import { InvalidCredentialsError } from '@/domains/forum/application/use-case/errors/invalid-credentials-error'
 
 const AuthenticateBodySchema = z.object({
   email: z.string().email(),
@@ -17,36 +16,33 @@ const bodyValidationPepe = new ZodValidationPipe(AuthenticateBodySchema)
 
 @Controller()
 export class AuthenticateController {
-  constructor(
-    private prisma: PrismaService,
-    private jwt: JwtService,
-  ) {}
+  constructor(private authenticateStudent: NestAuthenticateStudentUseCase) {}
 
   @Post('/sessions')
   @HttpCode(201)
   async handle(@Body(bodyValidationPepe) body: AuthenticateBodyType) {
     const { email, password } = body
 
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email,
-      },
+    const result = await this.authenticateStudent.execute({
+      email,
+      password,
     })
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials')
+    if (result.isLeft()) {
+      const error = result.value
+
+      switch (error.constructor) {
+        case InvalidCredentialsError:
+          throw new UnauthorizedException(error.message)
+        default:
+          throw new BadRequestException(error.message)
+      }
     }
 
-    const isValidPassword = await compare(password, user.password)
-
-    if (!isValidPassword) {
-      throw new UnauthorizedException('Invalid credentials')
-    }
-
-    const token = this.jwt.sign({ sub: user.id })
+    const { token } = result.value
 
     return {
-      token,
+      token: token,
     }
   }
 }
