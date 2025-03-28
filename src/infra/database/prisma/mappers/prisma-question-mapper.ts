@@ -1,10 +1,10 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Question } from '@/domains/forum/enterprise/entities/question'
 import { Slug } from '@/domains/forum/enterprise/entities/value-objects/slug'
-import { Prisma, Question as PrismaQuetion } from '@prisma/client'
+import { Prisma, Question as PrismaQuestion } from '@prisma/client'
 
 export class PrismaQuestionMapper {
-  static toDomain(raw: PrismaQuetion): Question {
+  static toDomain(raw: PrismaQuestion): Question {
     return Question.create(
       {
         title: raw.title,
