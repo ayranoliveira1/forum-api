@@ -10,6 +10,7 @@ import { z } from 'zod'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { NestRegisterStudentUseCase } from '@/infra/nest-use-case/nest-register-student'
 import { StudentAlreadyExistsError } from '@/domains/forum/application/use-case/errors/student-already-exists-error'
+import { Public } from '@/infra/auth/public'
 
 const createAccountBodySchema = z.object({
   name: z.string(),
@@ -22,6 +23,7 @@ type CreateAccountBodyType = z.infer<typeof createAccountBodySchema>
 const bodyValidationPepe = new ZodValidationPipe(createAccountBodySchema)
 
 @Controller()
+@Public()
 export class CreateAccountController {
   constructor(private registerStudent: NestRegisterStudentUseCase) {}
 

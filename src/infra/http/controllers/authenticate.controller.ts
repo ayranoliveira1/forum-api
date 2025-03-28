@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { NestAuthenticateStudentUseCase } from '@/infra/nest-use-case/nest-authenticate-student'
 import { InvalidCredentialsError } from '@/domains/forum/application/use-case/errors/invalid-credentials-error'
+import { Public } from '@/infra/auth/public'
 
 const AuthenticateBodySchema = z.object({
   email: z.string().email(),
@@ -15,6 +16,7 @@ type AuthenticateBodyType = z.infer<typeof AuthenticateBodySchema>
 const bodyValidationPepe = new ZodValidationPipe(AuthenticateBodySchema)
 
 @Controller()
+@Public()
 export class AuthenticateController {
   constructor(private authenticateStudent: NestAuthenticateStudentUseCase) {}
 

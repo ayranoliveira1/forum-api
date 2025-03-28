@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  Controller,
-  Get,
-  Query,
-  UseGuards,
-} from '@nestjs/common'
-import { JwtAuthGuart } from '@/infra/auth/jwt-auth-guard'
+import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
 import { NestFetchRecentsQuestionsUseCase } from '@/infra/nest-use-case/nest-fetch-recentes-questions'
@@ -27,7 +20,6 @@ const queryValidationPipe = new ZodValidationPipe(
 )
 
 @Controller()
-@UseGuards(JwtAuthGuart)
 export class FetchRecentQuestionsController {
   constructor(private recentsQuestions: NestFetchRecentsQuestionsUseCase) {}
 
