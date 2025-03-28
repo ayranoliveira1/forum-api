@@ -34,7 +34,7 @@ export class FetchRecentQuestionsController {
     })
 
     if (results.isLeft()) {
-      throw new Error('Unexpected error')
+      throw new Error()
     }
 
     const questions = results.value?.questions
